@@ -1,5 +1,5 @@
 #---SYMMETRIC INJECTOR FLOW CALCULATOR---
-# version 1.1.0
+# version 1.2.0
 
 from dearpygui.core import *
 from dearpygui.simple import *
@@ -36,7 +36,7 @@ def importFile():
 
     try:
         import_lines = import_file.readlines()
-        if not import_lines[0][18:-1] == "1.1.0":
+        if not import_lines[0][18:-1] == "1.2.0":
             log_warning("Save file version does not match software version. Import might fail.", logger="Logs")
         set_value(name="dx_field", value=import_lines[4][23:-1])
         set_value(name="theta_field", value=import_lines[5][13:-1])
@@ -66,7 +66,7 @@ def exportFile():
 
     try:
         result_file = open(exportFile, "w")
-        result_file.write("Save file version 1.1.0\n\n")
+        result_file.write("Save file version 1.2.0\n\n")
         result_file.write("INPUTS\n\n")
         result_file.write("Dx (horizontal dist.): ")
         result_file.write(str(last_dx)+"\n")
@@ -81,6 +81,8 @@ def exportFile():
         result_file.write(str(get_value("tx"))+"\n")
         result_file.write("Flow intersect Dy (m): ")
         result_file.write(str(get_value("dy"))+"\n")
+        result_file.write("Jet collision angle (deg): ")
+        result_file.write(str(get_value("fi"))+"\n")
         log_info("Inputs saved in " + exportFile, logger = "Logs")
     except:
         log_error("TXT export failed.", logger = "Logs")  
@@ -131,6 +133,8 @@ def computeFlow():
         delta_y = (delta_t*(a*delta_t + 2*v*math.cos(theta)))/2
 
     add_line_series(name="Flow Curve" , plot="flow_curve",x=x_vals, y=y_vals)
+    collision_angle = math.degrees(math.atan((y_vals[-1]-y_vals[-2])/(x_vals[-1]-x_vals[-2])))
+    set_value(name="fi", value = collision_angle)
     
     if get_value("mirror_check"):
         x_vals_m = []
@@ -170,6 +174,7 @@ with window("Output", width=500, height=510):
     set_window_pos("Output", 470, 80)
     add_input_text(name="dy_output", label="Vert. Dist. (m)", source="dy", readonly=True, enabled=False)
     add_input_text(name="tx_output", label="Intersect Time (s)", source="tx", readonly=True, enabled=False)
+    add_input_text(name="ca_output", label="Collision Angle (deg)", source="fi", readonly=True, enabled=False)
     add_plot(name="flow_curve", label="Flow",
              x_axis_name="X Axis (m)", y_axis_name = "Y Axis (m)", equal_aspects = True)
 

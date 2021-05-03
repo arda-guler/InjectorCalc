@@ -133,7 +133,7 @@ def computeFlow():
         delta_y = (delta_t*(a*delta_t + 2*v*math.cos(theta)))/2
 
     add_line_series(name="Flow Curve" , plot="flow_curve",x=x_vals, y=y_vals)
-    collision_angle = math.degrees(math.atan((y_vals[-1]-y_vals[-2])/(x_vals[-1]-x_vals[-2])))
+    collision_angle = 2*math.degrees(math.atan((y_vals[-1]-y_vals[-2])/(x_vals[-1]-x_vals[-2])))
     set_value(name="fi", value = collision_angle)
     
     if get_value("mirror_check"):

@@ -1,5 +1,5 @@
 #---SYMMETRIC INJECTOR FLOW CALCULATOR---
-# version 1.2.0
+# version 1.2.1
 
 from dearpygui.core import *
 from dearpygui.simple import *
@@ -36,7 +36,7 @@ def importFile():
 
     try:
         import_lines = import_file.readlines()
-        if not import_lines[0][18:-1] == "1.2.0":
+        if not import_lines[0][18:-1] == "1.2.1":
             log_warning("Save file version does not match software version. Import might fail.", logger="Logs")
         set_value(name="dx_field", value=import_lines[4][23:-1])
         set_value(name="theta_field", value=import_lines[5][13:-1])
@@ -66,7 +66,7 @@ def exportFile():
 
     try:
         result_file = open(exportFile, "w")
-        result_file.write("Save file version 1.2.0\n\n")
+        result_file.write("Save file version 1.2.1\n\n")
         result_file.write("INPUTS\n\n")
         result_file.write("Dx (horizontal dist.): ")
         result_file.write(str(last_dx)+"\n")
@@ -133,7 +133,7 @@ def computeFlow():
         delta_y = (delta_t*(a*delta_t + 2*v*math.cos(theta)))/2
 
     add_line_series(name="Flow Curve" , plot="flow_curve",x=x_vals, y=y_vals)
-    collision_angle = 2*math.degrees(math.atan((y_vals[-1]-y_vals[-2])/(x_vals[-1]-x_vals[-2])))
+    collision_angle = min(2*(90-math.degrees(math.atan((y_vals[-1]-y_vals[-2])/(x_vals[-1]-x_vals[-2])))), (360-2*(90-math.degrees(math.atan((y_vals[-1]-y_vals[-2])/(x_vals[-1]-x_vals[-2]))))))
     set_value(name="fi", value = collision_angle)
     
     if get_value("mirror_check"):
